@@ -1,6 +1,6 @@
-class Frame_2:
+class Frame:
     def __init__(self):
-        self.next_frame: Frame_2 | None = None
+        self.next_frame: Frame | None = None
         self.first_throw: int | None = None
         self.second_throw: int | None = None
 
@@ -50,7 +50,7 @@ class Frame_2:
             raise ValueError("Frame is already full")
 
 
-class StrikeFrame(Frame_2):
+class StrikeFrame(Frame):
     def __init__(self):
         self.first_throw = 10
         self.second_throw = None
@@ -64,7 +64,7 @@ class StrikeFrame(Frame_2):
         return 10 + self.next_throw_score + self.second_next_throw_score
 
 
-class SpareFrame(Frame_2):
+class SpareFrame(Frame):
     def __init__(self, first_throw: int, second_throw: int):
         self.first_throw = first_throw
         self.second_throw = second_throw
@@ -78,7 +78,7 @@ class SpareFrame(Frame_2):
         return 10 + self.next_throw_score
 
 
-class IncompleteFrame(Frame_2):
+class IncompleteFrame(Frame):
     def __init__(self, first_throw: int):
         self.first_throw = first_throw
         self.second_throw = None
@@ -92,7 +92,7 @@ class IncompleteFrame(Frame_2):
         return False
 
 
-class OpenFrame(Frame_2):
+class OpenFrame(Frame):
     def __init__(self, first_throw: int, second_throw: int):
         self.first_throw = first_throw
         self.second_throw = second_throw
@@ -106,30 +106,33 @@ class OpenFrame(Frame_2):
         return self.first_throw_score + self.second_throw_score
 
 
-class Game_2:
+class Game:
     def __init__(self):
         self._throws = []
 
     @property
-    def _frames(self) -> list[Frame_2]:
+    def _frames(self) -> list[Frame]:
+        return self._get_frames(self._throws)
+
+    def _get_frames(self, throws: list[int]) -> list[Frame]:
         _frames_list = []
         i = 0
-        while i < len(self._throws):
+        while i < len(throws):
             new_frame = None
-            if self._throws[i] == 10:
+            if throws[i] == 10:
                 new_frame = StrikeFrame()
                 _frames_list.append(new_frame)
                 i += 1
-            elif i == len(self._throws) - 1:
-                new_frame = IncompleteFrame(self._throws[i])
+            elif i == len(throws) - 1:
+                new_frame = IncompleteFrame(throws[i])
                 _frames_list.append(new_frame)
                 i += 1
-            elif self._throws[i] + self._throws[i + 1] == 10:
-                new_frame = SpareFrame(self._throws[i], self._throws[i + 1])
+            elif throws[i] + throws[i + 1] == 10:
+                new_frame = SpareFrame(throws[i], throws[i + 1])
                 _frames_list.append(new_frame)
                 i += 2
             else:
-                new_frame = OpenFrame(self._throws[i], self._throws[i + 1])
+                new_frame = OpenFrame(throws[i], throws[i + 1])
                 _frames_list.append(new_frame)
                 i += 2
 
@@ -143,7 +146,7 @@ class Game_2:
         return self.score_at_frame(len(self._frames))
 
     @property
-    def last_frame(self) -> Frame_2:
+    def last_frame(self) -> Frame:
         return self._frames[-1] if self._frames else None
 
     @property

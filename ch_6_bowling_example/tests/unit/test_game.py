@@ -1,5 +1,5 @@
 import pytest
-from app.game import Game_2 as Game
+from app.game import Game as Game
 
 
 @pytest.fixture
