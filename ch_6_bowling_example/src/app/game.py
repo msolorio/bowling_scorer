@@ -30,6 +30,9 @@ class Frame_2:
         self.first_throw: int | None = None
         self.second_throw: int | None = None
 
+    def new(self, first_throw=None, second_throw=None):
+        pass
+
     @property
     def first_throw_score(self) -> int:
         return self.first_throw or 0
@@ -44,7 +47,10 @@ class Frame_2:
 
     @property
     def next_throw(self) -> int:
-        return self.next_frame.first_throw_score if self.next_frame else 0
+        if self.next_frame:
+            return self.next_frame.first_throw_score
+        else:
+            return 0
 
     @property
     def second_next_throw(self) -> int:
@@ -75,7 +81,7 @@ class Frame_2:
 
     @property
     def is_full(self) -> bool:
-        return self.first_throw is not None and self.second_throw is not None
+        raise NotImplementedError
 
     def add_throw(self, num_of_pins: int):
         if self.first_throw is None:
@@ -86,10 +92,81 @@ class Frame_2:
             raise ValueError("Frame is already full")
 
 
+class StrikeFrame(Frame_2):
+    def __init__(self):
+        self.first_throw = 10
+        self.second_throw = None
+
+    @property
+    def is_full(self) -> bool:
+        return True
+
+
+class SpareFrame(Frame_2):
+    def __init__(self, first_throw: int, second_throw: int):
+        self.first_throw = first_throw
+        self.second_throw = second_throw
+
+    @property
+    def is_full(self) -> bool:
+        return True
+
+
+class IncompleteFrame(Frame_2):
+    def __init__(self, first_throw: int):
+        self.first_throw = first_throw
+        self.second_throw = None
+
+    @property
+    def score(self) -> int:
+        return self.first_throw_score
+
+    @property
+    def is_full(self) -> bool:
+        return False
+
+
+class OpenFrame(Frame_2):
+    def __init__(self, first_throw: int, second_throw: int):
+        self.first_throw = first_throw
+        self.second_throw = second_throw
+
+    @property
+    def is_full(self) -> bool:
+        return True
+
+
 class Game_2:
     def __init__(self):
-        self._frames = []
-        self._first_throw: bool = True
+        self._throws = []
+
+    @property
+    def _frames(self) -> list[Frame_2]:
+        _frames_list = []
+        i = 0
+        while i < len(self._throws):
+            new_frame = None
+            if self._throws[i] == 10:
+                new_frame = StrikeFrame()
+                _frames_list.append(new_frame)
+                i += 1
+            elif i == len(self._throws) - 1:
+                new_frame = IncompleteFrame(self._throws[i])
+                _frames_list.append(new_frame)
+                i += 1
+            elif self._throws[i] + self._throws[i + 1] == 10:
+                new_frame = SpareFrame(self._throws[i], self._throws[i + 1])
+                _frames_list.append(new_frame)
+                i += 2
+            else:
+                new_frame = OpenFrame(self._throws[i], self._throws[i + 1])
+                _frames_list.append(new_frame)
+                i += 2
+
+            if len(_frames_list) > 1:
+                _frames_list[-2].next_frame = new_frame
+
+        return _frames_list
 
     @property
     def score(self) -> int:
@@ -99,34 +176,16 @@ class Game_2:
     def last_frame(self) -> Frame_2:
         return self._frames[-1] if self._frames else None
 
-    def link_new_frame(self, frame: Frame_2):
-        if self.last_frame:
-            self.last_frame.next_frame = frame
-
     @property
-    def current_frame(self) -> Frame_2:
-        if self._first_throw:
-            new_frame = Frame_2()
-            self.link_new_frame(new_frame)
-            self._frames.append(new_frame)
-            return new_frame
-        else:
-            return self._frames[-1]
+    def start_new_frame(self):
+        return (not self.last_frame) or self.last_frame.is_full
 
     @property
     def current_frame_number(self) -> int:
-        if self._first_throw:
-            return len(self._frames) + 1
-        else:
-            return len(self._frames)
+        return len(self._frames) + 1 if self.start_new_frame else len(self._frames)
 
     def add_throw(self, num_of_pins: int):
-        self.current_frame.add_throw(num_of_pins)
-
-        if not self._first_throw or num_of_pins == 10:
-            self._first_throw = True
-        else:
-            self._first_throw = False
+        self._throws.append(num_of_pins)
 
     def score_at_frame(self, frame: int) -> int:
         return sum(frame.score for frame in self._frames[:frame])
