@@ -1,37 +1,8 @@
-class Game:
-    def __init__(self):
-        self._score = 0
-        self._throws = []
-
-    def score(self) -> int:
-        return sum(self._throws)
-
-    def add_throw(self, num_of_pins: int):
-        self._throws.append(num_of_pins)
-
-    def score_at_frame(self, frame: int) -> int:
-        first_throw_index = (frame * 2) - 2
-        previous_frames_score = sum(self._throws[:first_throw_index])
-        downed_pins = sum(self._throws[first_throw_index : first_throw_index + 2])
-
-        if downed_pins == 10:
-            return (
-                previous_frames_score
-                + downed_pins
-                + self._throws[first_throw_index + 2]
-            )
-        else:
-            return previous_frames_score + downed_pins
-
-
 class Frame_2:
     def __init__(self):
         self.next_frame: Frame_2 | None = None
         self.first_throw: int | None = None
         self.second_throw: int | None = None
-
-    def new(self, first_throw=None, second_throw=None):
-        pass
 
     @property
     def first_throw_score(self) -> int:
@@ -42,42 +13,29 @@ class Frame_2:
         return self.second_throw or 0
 
     @property
-    def next_frame_second_throw(self) -> int:
-        return self.next_frame.second_throw_score if self.next_frame else 0
-
-    @property
-    def next_throw(self) -> int:
+    def next_throw_score(self) -> int:
         if self.next_frame:
             return self.next_frame.first_throw_score
         else:
             return 0
 
     @property
-    def second_next_throw(self) -> int:
+    def second_next_throw_score(self) -> int:
         if self.next_frame:
             if self.next_frame.is_strike:
-                return self.next_frame.next_throw
+                return self.next_frame.next_throw_score
             else:
-                return self.next_frame.second_throw
+                return self.next_frame.second_throw_score
         else:
             return 0
 
     @property
     def score(self) -> int:
-        if self.is_strike:
-            return 10 + self.next_throw + self.second_next_throw
-        elif self.is_spare:
-            return 10 + self.next_throw
-        else:
-            return self.first_throw_score + self.second_throw_score
+        raise NotImplementedError
 
     @property
     def is_strike(self) -> bool:
         return self.first_throw_score == 10
-
-    @property
-    def is_spare(self) -> bool:
-        return self.first_throw_score + self.second_throw_score == 10
 
     @property
     def is_full(self) -> bool:
@@ -101,6 +59,10 @@ class StrikeFrame(Frame_2):
     def is_full(self) -> bool:
         return True
 
+    @property
+    def score(self) -> int:
+        return 10 + self.next_throw_score + self.second_next_throw_score
+
 
 class SpareFrame(Frame_2):
     def __init__(self, first_throw: int, second_throw: int):
@@ -110,6 +72,10 @@ class SpareFrame(Frame_2):
     @property
     def is_full(self) -> bool:
         return True
+
+    @property
+    def score(self) -> int:
+        return 10 + self.next_throw_score
 
 
 class IncompleteFrame(Frame_2):
@@ -134,6 +100,10 @@ class OpenFrame(Frame_2):
     @property
     def is_full(self) -> bool:
         return True
+
+    @property
+    def score(self) -> int:
+        return self.first_throw_score + self.second_throw_score
 
 
 class Game_2:
