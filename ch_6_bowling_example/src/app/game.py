@@ -1,6 +1,17 @@
 from app.frame import Frame, StrikeFrame, SpareFrame, OpenFrame, IncompleteFrame
 
 
+class Throws:
+    def __init__(self):
+        self._throws = []
+
+    def add_throw(self, num_of_pins: int):
+        self._throws.append(num_of_pins)
+
+    def get_throw(self, index: int) -> int:
+        return self._throws[index] if index < len(self._throws) else 0
+
+
 class Game:
     def __init__(self):
         self._throws = []
