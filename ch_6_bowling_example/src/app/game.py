@@ -22,13 +22,12 @@ from app.throw import Throw
 
 class Game:
     def __init__(self):
-        self._throws = []
-        self.first_throw = None
+        self._first_throw = None
         self._last_throw = None
 
     @property
     def _frames(self) -> list[Frame]:
-        return Frames(throws=self._throws, first_throw=self.first_throw)
+        return Frames(first_throw=self._first_throw)
 
     @property
     def score(self) -> int:
@@ -39,11 +38,9 @@ class Game:
         return self._frames.current_frame_number
 
     def add_throw(self, num_of_pins: int):
-        self._throws.append(num_of_pins)
-
-        if not self.first_throw:
+        if not self._first_throw:
             first_throw = Throw(num_of_pins)
-            self.first_throw = first_throw
+            self._first_throw = first_throw
             self._last_throw = first_throw
         else:
             self._last_throw.next = num_of_pins

@@ -3,34 +3,22 @@ from app.throw import Throw
 
 
 class Frames:
-    def __init__(self, throws: list[int] = [], first_throw: Throw = None):
+    def __init__(self, first_throw: Throw = None):
         self._frames = []
-        self._generate_frames(throws, first_throw)
+        self._generate_frames(first_throw)
 
     def __repr__(self):
         return self._frames
 
-    def _generate_frames(
-        self, throws: list[int], first_throw: Throw = None
-    ) -> list[Frame]:
-        i = 0
+    def _generate_frames(self, first_throw: Throw = None) -> list[Frame]:
         current_throw = first_throw
-        while i < len(throws):
-            self._frames.append(
-                FrameFactory.new_frame(
-                    throws=throws,
-                    start_index=i,
-                    starting_throw=current_throw,
-                )
-            )
-            i += self._last_frame_num_of_throws
+        while current_throw:
+            self._frames.append(FrameFactory.new_frame(starting_throw=current_throw))
 
-            if not current_throw:
-                return
-            if self._last_frame_num_of_throws == 1:
+            i = 0
+            while i < self._last_frame_num_of_throws:
                 current_throw = current_throw.next
-            elif self._last_frame_num_of_throws == 2:
-                current_throw = current_throw.second_next
+                i += 1
 
     @property
     def current_frame_number(self) -> bool:

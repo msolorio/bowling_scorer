@@ -5,9 +5,7 @@ from app.throw import Throw
 
 class FrameFactory:
     @staticmethod
-    def new_frame(
-        throws: list[int], start_index: int, starting_throw: Throw = None
-    ) -> "Frame":
+    def new_frame(starting_throw: Throw) -> "Frame":
         if starting_throw == 10:
             frame = StrikeFrame
         elif starting_throw.next is None:
@@ -17,13 +15,11 @@ class FrameFactory:
         else:
             frame = OpenFrame
 
-        return frame(starting_throw, throws=throws, start_index=start_index)
+        return frame(starting_throw)
 
 
 class Frame(abc.ABC):
-    def __init__(self, starting_throw, throws=[], start_index=0):
-        self.throws = throws
-        self.start_index = start_index
+    def __init__(self, starting_throw: Throw):
         self.starting_throw = starting_throw
 
     @property
