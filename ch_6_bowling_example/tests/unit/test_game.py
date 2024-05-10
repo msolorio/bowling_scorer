@@ -1,5 +1,6 @@
 import pytest
 from app.game import Game as Game
+from app.frame import StrikeFrame, OpenFrame
 
 
 @pytest.fixture
