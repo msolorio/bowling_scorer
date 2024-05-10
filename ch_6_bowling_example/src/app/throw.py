@@ -7,7 +7,13 @@ class Throw:
         return self.num_of_pins == other
 
     def __add__(self, other):
+        if isinstance(other, int):
+            return self.num_of_pins + other
+
         return self.num_of_pins + other.num_of_pins
+
+    def __radd__(self, other):
+        return self.__add__(other)
 
     @property
     def next(self):
