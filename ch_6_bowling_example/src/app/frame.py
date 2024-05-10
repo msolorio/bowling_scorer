@@ -34,11 +34,6 @@ class Frame(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def add_throw(self, num_of_pins: int):
-        pass
-
-    @property
-    @abc.abstractmethod
     def num_of_throws(self) -> bool:
         pass
 
@@ -55,9 +50,6 @@ class StrikeFrame(Frame):
             + self.starting_throw.next
             + self.starting_throw.second_next
         )
-
-    def add_throw(self, num_of_pins: int):
-        raise ValueError("Frame is already full")
 
     @property
     def num_of_throws(self) -> bool:
@@ -77,9 +69,6 @@ class SpareFrame(Frame):
             + self.starting_throw.second_next
         )
 
-    def add_throw(self, num_of_pins: int):
-        raise ValueError("Frame is already full")
-
     @property
     def num_of_throws(self) -> bool:
         return 2
@@ -94,9 +83,6 @@ class IncompleteFrame(Frame):
     def is_full(self) -> bool:
         return False
 
-    def add_throw(self, num_of_pins: int):
-        self.second_throw = num_of_pins
-
     @property
     def num_of_throws(self) -> bool:
         return 1
@@ -110,9 +96,6 @@ class OpenFrame(Frame):
     @property
     def score(self) -> int:
         return self.starting_throw + self.starting_throw.next
-
-    def add_throw(self, num_of_pins: int):
-        raise ValueError("Frame is already full")
 
     @property
     def num_of_throws(self) -> bool:
