@@ -1,33 +1,17 @@
 from app.frames import Frames
 from app.frame import Frame
-from app.throw import Throw
-
-# class Throws:
-#     def __init__(self):
-#         self._throws = []
-
-#     def add_throw(self, num_of_pins: int):
-#         self._throws.append(num_of_pins)
-
-#     def get_throw(self, index: int) -> int:
-#         return self._throws[index] if index < len(self._throws) else 0
-
-#     # get next throw
-
-#     # get next next throw
-
-
-# possible Throw class that knows its next throw and next next throw
+from app.throws import Throws
 
 
 class Game:
     def __init__(self):
         self._first_throw = None
         self._last_throw = None
+        self._throws = Throws()
 
     @property
     def _frames(self) -> list[Frame]:
-        return Frames(first_throw=self._first_throw)
+        return Frames(throws=self._throws)
 
     @property
     def score(self) -> int:
@@ -38,15 +22,7 @@ class Game:
         return self._frames.current_frame_number
 
     def add_throw(self, num_of_pins: int):
-        if not self._first_throw:
-            first_throw = Throw(num_of_pins)
-            self._first_throw = first_throw
-            self._last_throw = first_throw
-        else:
-            self._last_throw.next = num_of_pins
-            self._last_throw = self._last_throw.next
+        self._throws.add(num_of_pins)
 
-        return
-
-    def score_at_frame(self, frame: int) -> int:
-        return sum(frame.score for frame in self._frames[:frame])
+    def score_at_frame(self, frame_num: int) -> int:
+        return self._frames.score_at_frame(frame_num)

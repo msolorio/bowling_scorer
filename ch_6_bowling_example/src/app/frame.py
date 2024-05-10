@@ -8,7 +8,7 @@ class FrameFactory:
     def new_frame(starting_throw: Throw) -> "Frame":
         if starting_throw == 10:
             frame = StrikeFrame
-        elif starting_throw.next is None:
+        elif not starting_throw.next:
             frame = IncompleteFrame
         elif starting_throw + starting_throw.next == 10:
             frame = SpareFrame
@@ -45,7 +45,7 @@ class StrikeFrame(Frame):
 
     @property
     def score(self) -> int:
-        return (
+        return int(
             self.starting_throw
             + self.starting_throw.next
             + self.starting_throw.second_next
@@ -63,7 +63,7 @@ class SpareFrame(Frame):
 
     @property
     def score(self) -> int:
-        return (
+        return int(
             self.starting_throw
             + self.starting_throw.next
             + self.starting_throw.second_next
@@ -77,7 +77,7 @@ class SpareFrame(Frame):
 class IncompleteFrame(Frame):
     @property
     def score(self) -> int:
-        return self.starting_throw
+        return int(self.starting_throw)
 
     @property
     def is_full(self) -> bool:
@@ -95,7 +95,7 @@ class OpenFrame(Frame):
 
     @property
     def score(self) -> int:
-        return self.starting_throw + self.starting_throw.next
+        return int(self.starting_throw + self.starting_throw.next)
 
     @property
     def num_of_throws(self) -> bool:
