@@ -1,14 +1,18 @@
 import abc
 
+from app.throw import Throw
+
 
 class FrameFactory:
     @staticmethod
-    def new_frame(throws: list[int], start_index: int) -> "Frame":
-        if throws[start_index] == 10:
+    def new_frame(
+        throws: list[int], start_index: int, starting_throw: Throw = None
+    ) -> "Frame":
+        if starting_throw == 10:
             frame = StrikeFrame
-        elif start_index == len(throws) - 1:
+        elif starting_throw.next is None:
             frame = IncompleteFrame
-        elif throws[start_index] + throws[start_index + 1] == 10:
+        elif starting_throw + starting_throw.next == 10:
             frame = SpareFrame
         else:
             frame = OpenFrame
