@@ -38,17 +38,13 @@ class Frame(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def is_single_throw(self) -> bool:
+    def num_of_throws(self) -> bool:
         pass
 
 
 class StrikeFrame(Frame):
     @property
     def is_full(self) -> bool:
-        return True
-
-    @property
-    def is_single_throw(self) -> bool:
         return True
 
     @property
@@ -60,6 +56,10 @@ class StrikeFrame(Frame):
     def add_throw(self, num_of_pins: int):
         raise ValueError("Frame is already full")
 
+    @property
+    def num_of_throws(self) -> bool:
+        return 1
+
 
 class SpareFrame(Frame):
     @property
@@ -67,15 +67,15 @@ class SpareFrame(Frame):
         return True
 
     @property
-    def is_single_throw(self) -> bool:
-        return False
-
-    @property
     def score(self) -> int:
         return 10 + self.throws[self.start_index + 2]
 
     def add_throw(self, num_of_pins: int):
         raise ValueError("Frame is already full")
+
+    @property
+    def num_of_throws(self) -> bool:
+        return 2
 
 
 class IncompleteFrame(Frame):
@@ -87,12 +87,12 @@ class IncompleteFrame(Frame):
     def is_full(self) -> bool:
         return False
 
-    @property
-    def is_single_throw(self) -> bool:
-        return True
-
     def add_throw(self, num_of_pins: int):
         self.second_throw = num_of_pins
+
+    @property
+    def num_of_throws(self) -> bool:
+        return 1
 
 
 class OpenFrame(Frame):
@@ -101,12 +101,12 @@ class OpenFrame(Frame):
         return True
 
     @property
-    def is_single_throw(self) -> bool:
-        return False
-
-    @property
     def score(self) -> int:
         return self.throws[self.start_index] + self.throws[self.start_index + 1]
 
     def add_throw(self, num_of_pins: int):
         raise ValueError("Frame is already full")
+
+    @property
+    def num_of_throws(self) -> bool:
+        return 2

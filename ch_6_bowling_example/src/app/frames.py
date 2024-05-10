@@ -13,18 +13,22 @@ class Frames:
         i = 0
         while i < len(throws):
             self._frames.append(FrameFactory.new_frame(throws=throws, start_index=i))
-            i = i + (1 if self._last_frame_is_single_throw else 2)
-
-    @property
-    def _last_frame_is_single_throw(self) -> bool:
-        return self._frames[-1].is_single_throw
+            i += self._last_frame_num_of_throws
 
     @property
     def current_frame_number(self) -> bool:
-        if not self._frames or self._frames[-1].is_full:
+        if not self._last_frame or self._last_frame.is_full:
             return len(self._frames) + 1
         else:
             return len(self._frames)
+
+    @property
+    def _last_frame_num_of_throws(self) -> bool:
+        return self._last_frame.num_of_throws if self._last_frame else 0
+
+    @property
+    def _last_frame(self) -> Frame:
+        return self._frames[-1] if self._frames else False
 
     def __len__(self):
         return len(self._frames)
