@@ -60,9 +60,11 @@ class EmptyNode(AbstractThrowNode):
     def num_of_pins(self):
         return 0
 
+    @property
     def next(self):
         return self
 
+    @property
     def second_next(self):
         return self
 

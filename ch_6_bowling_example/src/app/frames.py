@@ -22,8 +22,13 @@ class Frames:
 
     def _generate_frames(self, throws: Throws = Throws()) -> list[Frame]:
         current_throw = throws.first
-        while current_throw:
-            self._frames.append(FrameFactory.new_frame(starting_throw=current_throw))
+        while current_throw and len(self._frames) < 10:
+            self._frames.append(
+                FrameFactory.new_frame(
+                    starting_throw=current_throw,
+                    frame_number=self.current_frame_number,
+                )
+            )
 
             i = 0
             while i < self._last_frame_num_of_throws:
