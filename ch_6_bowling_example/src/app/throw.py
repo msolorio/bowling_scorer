@@ -17,6 +17,16 @@ class AbstractThrowNode(abc.ABC):
     def second_next(self) -> "AbstractThrowNode":
         pass
 
+    @property
+    @abc.abstractmethod
+    def is_strike(self) -> bool:
+        pass
+
+    @property
+    @abc.abstractmethod
+    def is_spare(self) -> bool:
+        pass
+
     def __int__(self):
         return self.num_of_pins
 
@@ -54,6 +64,14 @@ class Throw(AbstractThrowNode):
     def second_next(self):
         return self._next.next if self._next else self._next
 
+    @property
+    def is_strike(self) -> bool:
+        return self._num_of_pins == 10
+
+    @property
+    def is_spare(self) -> bool:
+        return self._num_of_pins + self._next.num_of_pins == 10
+
 
 class EmptyNode(AbstractThrowNode):
     @property
@@ -67,6 +85,14 @@ class EmptyNode(AbstractThrowNode):
     @property
     def second_next(self):
         return self
+
+    @property
+    def is_strike(self) -> bool:
+        return False
+
+    @property
+    def is_spare(self) -> bool:
+        return False
 
     def __add__(self, other: AbstractThrowNode) -> AbstractThrowNode:
         return other

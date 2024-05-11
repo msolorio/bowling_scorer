@@ -36,3 +36,15 @@ def test_can_add_throw_with_empty_node():
     throw = Throw(5)
     assert isinstance(throw.next, EmptyNode)
     assert throw + throw.next == 5
+
+
+def test_throw_is_strike_throw():
+    throw = Throw(10)
+    assert throw.is_strike
+
+
+def test_throw_is_spare_throw():
+    throw = Throw(5)
+    throw.next = 5
+    assert not throw.is_strike
+    assert throw.is_spare

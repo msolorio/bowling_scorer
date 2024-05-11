@@ -8,11 +8,11 @@ class FrameFactory:
     def new_frame(starting_throw: Throw, frame_number: int) -> "Frame":
         if frame_number == 10:
             frame = FrameFactory.new_final_frame(starting_throw)
-        elif starting_throw == 10:
+        elif starting_throw.is_strike:
             frame = StrikeFrame
         elif not starting_throw.next:
             frame = IncompleteFrame
-        elif starting_throw + starting_throw.next == 10:
+        elif starting_throw.is_spare:
             frame = SpareFrame
         else:
             frame = OpenFrame
@@ -21,7 +21,7 @@ class FrameFactory:
 
     @staticmethod
     def new_final_frame(starting_throw: Throw) -> "Frame":
-        if starting_throw == 10 or starting_throw + starting_throw.next == 10:
+        if starting_throw.is_strike or starting_throw.is_spare:
             return LastFrameStrikeOrSpare
         elif starting_throw.next:
             return LastFrameOpenFrame
