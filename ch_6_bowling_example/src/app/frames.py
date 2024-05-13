@@ -4,7 +4,12 @@ from app.throw import Throw
 
 
 class Frames:
-    def __init__(self, throws: Throws = None):
+    def __init__(
+        self,
+        throws: Throws = None,
+        frame_factory: FrameFactory = FrameFactory,
+    ):
+        self.frame_factory = frame_factory
         self._frames = []
         self._generate_frames(throws=throws)
 
@@ -35,7 +40,7 @@ class Frames:
             return
 
         self._frames.append(
-            FrameFactory.new_frame(
+            self.frame_factory.new_frame(
                 starting_throw=starting_throw,
                 frame_number=frame_number,
             )
