@@ -35,12 +35,7 @@ class Frame(abc.ABC):
 
     @property
     def is_full(self) -> bool:
-        completed_throws = 0
-        throw = self.starting_throw
-        while throw:
-            completed_throws += 1
-            throw = throw.next
-        return completed_throws >= self.num_of_throws
+        return (1 + self.starting_throw.num_of_later_throws) >= self.total_throws
 
     @property
     @abc.abstractmethod
@@ -49,7 +44,7 @@ class Frame(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def num_of_throws(self) -> bool:
+    def total_throws(self) -> bool:
         pass
 
 
@@ -59,7 +54,7 @@ class StrikeFrame(Frame):
         return StrikeScorer
 
     @property
-    def num_of_throws(self) -> bool:
+    def total_throws(self) -> bool:
         return 1
 
 
@@ -69,7 +64,7 @@ class SpareFrame(Frame):
         return SpareScorer
 
     @property
-    def num_of_throws(self) -> bool:
+    def total_throws(self) -> bool:
         return 2
 
 
@@ -79,7 +74,7 @@ class OpenFrame(Frame):
         return OpenFrameScorer
 
     @property
-    def num_of_throws(self) -> bool:
+    def total_throws(self) -> bool:
         return 2
 
 
@@ -89,7 +84,7 @@ class LastStrikeFrame(Frame):
         return StrikeScorer
 
     @property
-    def num_of_throws(self) -> bool:
+    def total_throws(self) -> bool:
         return 3
 
 
@@ -99,5 +94,5 @@ class LastSpareFrame(Frame):
         return SpareScorer
 
     @property
-    def num_of_throws(self) -> bool:
+    def total_throws(self) -> bool:
         return 3

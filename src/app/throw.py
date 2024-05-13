@@ -27,6 +27,10 @@ class AbstractThrowNode(abc.ABC):
     def is_spare(self) -> bool:
         pass
 
+    @abc.abstractmethod
+    def xth_later_throw(self, x: int) -> "AbstractThrowNode":
+        pass
+
     def __int__(self):
         return self.num_of_pins
 
@@ -81,6 +85,23 @@ class Throw(AbstractThrowNode):
     def is_spare(self) -> bool:
         return self.num_of_pins + self._next.num_of_pins == 10
 
+    @property
+    def num_of_later_throws(self) -> int:
+        num = 0
+        throw = self.next
+        while throw:
+            num += 1
+            throw = throw.next
+        return num
+
+    def xth_later_throw(self, x: int) -> "AbstractThrowNode":
+        i = 0
+        throw = self
+        while i < x:
+            i += 1
+            throw = throw.next
+        return throw
+
 
 class EmptyNode(AbstractThrowNode):
     @property
@@ -102,6 +123,9 @@ class EmptyNode(AbstractThrowNode):
     @property
     def is_spare(self) -> bool:
         return False
+
+    def xth_later_throw(self, x: int) -> "AbstractThrowNode":
+        return self
 
     def __add__(self, other: AbstractThrowNode) -> AbstractThrowNode:
         return other

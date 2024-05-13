@@ -47,7 +47,7 @@ def test_create_strike_frame():
 
     assert isinstance(frames[0], StrikeFrame)
     assert frames[0].score == 12
-    assert frames[0].num_of_throws == 1
+    assert frames[0].total_throws == 1
 
 
 def test_create_spare_frame():
@@ -60,7 +60,7 @@ def test_create_spare_frame():
 
     assert isinstance(frames[0], SpareFrame)
     assert frames[0].score == 13
-    assert frames[0].num_of_throws == 2
+    assert frames[0].total_throws == 2
 
 
 def test_create_open_frame():
@@ -72,7 +72,7 @@ def test_create_open_frame():
 
     assert isinstance(frames[0], OpenFrame)
     assert frames[0].score == 8
-    assert frames[0].num_of_throws == 2
+    assert frames[0].total_throws == 2
 
 
 def test_create_incomplete_frame():
@@ -83,7 +83,7 @@ def test_create_incomplete_frame():
 
     assert isinstance(frames[0], OpenFrame)
     assert frames[0].score == 5
-    assert frames[0].num_of_throws == 2
+    assert frames[0].total_throws == 2
     assert frames[0].is_full is False
 
 

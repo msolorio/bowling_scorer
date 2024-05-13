@@ -48,3 +48,29 @@ def test_throw_is_spare_throw():
     throw.next = 5
     assert not throw.is_strike
     assert throw.is_spare
+
+
+def test_throw_has_one_later_throw():
+    throw = Throw(5)
+    throw.next = 3
+    assert throw.num_of_later_throws == 1
+
+
+def test_throw_has_two_later_throw():
+    throw = Throw(5)
+    throw.next = 3
+    throw.next.next = 2
+    assert throw.num_of_later_throws == 2
+
+
+def test_throw_can_get_1st_later_throw():
+    throw = Throw(5)
+    throw.next = 3
+    assert throw.xth_later_throw(1) == 3
+
+
+def test_throw_can_get_2nd_later_throw():
+    throw = Throw(5)
+    throw.next = 3
+    throw.next.next = 7
+    assert throw.xth_later_throw(2) == 7

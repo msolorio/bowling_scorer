@@ -33,7 +33,7 @@ class Frames:
                 starting_throw=current_throw,
                 frame_number=self.current_frame_number,
             )
-            current_throw = self._reset_current_throw(current_throw)
+            current_throw = current_throw.xth_later_throw(self._last_frame_total_throws)
 
     def _add_frame(self, starting_throw: Throw, frame_number: int):
         if len(self._frames) >= 10:
@@ -46,16 +46,9 @@ class Frames:
             )
         )
 
-    def _reset_current_throw(self, current_throw: Throw):
-        i = 0
-        while i < self._last_frame_num_of_throws:
-            current_throw = current_throw.next
-            i += 1
-        return current_throw
-
     @property
-    def _last_frame_num_of_throws(self) -> bool:
-        return self._last_frame.num_of_throws if self._last_frame else 0
+    def _last_frame_total_throws(self) -> bool:
+        return self._last_frame.total_throws if self._last_frame else 0
 
     @property
     def _last_frame(self) -> Frame:
