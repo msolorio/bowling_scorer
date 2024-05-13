@@ -42,7 +42,13 @@ class Throw(AbstractThrowNode):
     def __eq__(self, other):
         return self._num_of_pins == other
 
+    def __req__(self, other):
+        return self.__eq__(other)
+
     def __add__(self, other: AbstractThrowNode) -> "Throw":
+        if isinstance(other, int):
+            return Throw(self._num_of_pins + other)
+
         return Throw(self._num_of_pins + other.num_of_pins)
 
     def __radd__(self, other: AbstractThrowNode) -> "Throw":
@@ -58,7 +64,10 @@ class Throw(AbstractThrowNode):
 
     @next.setter
     def next(self, next_throw: int):
-        self._next = Throw(next_throw)
+        if isinstance(next_throw, Throw):
+            self._next = next_throw
+        else:
+            self._next = Throw(next_throw)
 
     @property
     def second_next(self):
@@ -66,11 +75,11 @@ class Throw(AbstractThrowNode):
 
     @property
     def is_strike(self) -> bool:
-        return self._num_of_pins == 10
+        return self.num_of_pins == 10
 
     @property
     def is_spare(self) -> bool:
-        return self._num_of_pins + self._next.num_of_pins == 10
+        return self.num_of_pins + self._next.num_of_pins == 10
 
 
 class EmptyNode(AbstractThrowNode):

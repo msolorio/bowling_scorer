@@ -5,8 +5,6 @@ from app.throws import Throws
 
 class Game:
     def __init__(self):
-        self._first_throw = None
-        self._last_throw = None
         self._throws = Throws()
 
     @property
