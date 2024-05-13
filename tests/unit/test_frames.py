@@ -1,6 +1,5 @@
 from app.frames import Frames
-from app.frame import StrikeFrame, SpareFrame, OpenFrame, IncompleteFrame
-from app.throw import Throw
+from app.frame import StrikeFrame, SpareFrame, OpenFrame
 from app.throws import Throws
 
 
@@ -82,9 +81,10 @@ def test_create_incomplete_frame():
 
     frames = Frames(throws=throws)
 
-    assert isinstance(frames[0], IncompleteFrame)
+    assert isinstance(frames[0], OpenFrame)
     assert frames[0].score == 5
-    assert frames[0].num_of_throws == 1
+    assert frames[0].num_of_throws == 2
+    assert frames[0].is_full is False
 
 
 def test_score_at_frame_number_single_open_frame():

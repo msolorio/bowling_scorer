@@ -5,7 +5,6 @@ from app.scorer import (
     AbstractScorer,
     StrikeScorer,
     SpareScorer,
-    IncompleteFrameScorer,
     OpenFrameScorer,
 )
 
@@ -21,11 +20,8 @@ class FrameFactory:
             frame = StrikeFrame
         elif starting_throw.is_spare:
             frame = SpareFrame
-        elif not starting_throw.next:
-            frame = IncompleteFrame
         else:
             frame = OpenFrame
-
         return frame(starting_throw)
 
 
@@ -38,13 +34,17 @@ class Frame(abc.ABC):
         return self.scorer(self.starting_throw).score
 
     @property
-    @abc.abstractmethod
-    def scorer(self) -> AbstractScorer:
-        pass
+    def is_full(self) -> bool:
+        completed_throws = 0
+        throw = self.starting_throw
+        while throw:
+            completed_throws += 1
+            throw = throw.next
+        return completed_throws >= self.num_of_throws
 
     @property
     @abc.abstractmethod
-    def is_full(self) -> bool:
+    def scorer(self) -> AbstractScorer:
         pass
 
     @property
@@ -59,10 +59,6 @@ class StrikeFrame(Frame):
         return StrikeScorer
 
     @property
-    def is_full(self) -> bool:
-        return True
-
-    @property
     def num_of_throws(self) -> bool:
         return 1
 
@@ -73,26 +69,8 @@ class SpareFrame(Frame):
         return SpareScorer
 
     @property
-    def is_full(self) -> bool:
-        return True
-
-    @property
     def num_of_throws(self) -> bool:
         return 2
-
-
-class IncompleteFrame(Frame):
-    @property
-    def scorer(self):
-        return IncompleteFrameScorer
-
-    @property
-    def is_full(self) -> bool:
-        return False
-
-    @property
-    def num_of_throws(self) -> bool:
-        return 1
 
 
 class OpenFrame(Frame):
@@ -101,30 +79,25 @@ class OpenFrame(Frame):
         return OpenFrameScorer
 
     @property
-    def is_full(self) -> bool:
-        return True
-
-    @property
     def num_of_throws(self) -> bool:
         return 2
 
 
-def ThreeThrowFrame(_scorer):
-    class ThreeThrowFrame(Frame):
-        @property
-        def scorer(self):
-            return _scorer
+class LastStrikeFrame(Frame):
+    @property
+    def scorer(self):
+        return StrikeScorer
 
-        @property
-        def is_full(self) -> bool:
-            return bool(self.starting_throw.second_next)
-
-        @property
-        def num_of_throws(self) -> bool:
-            return 3
-
-    return ThreeThrowFrame
+    @property
+    def num_of_throws(self) -> bool:
+        return 3
 
 
-LastStrikeFrame = ThreeThrowFrame(StrikeScorer)
-LastSpareFrame = ThreeThrowFrame(SpareScorer)
+class LastSpareFrame(Frame):
+    @property
+    def scorer(self):
+        return SpareScorer
+
+    @property
+    def num_of_throws(self) -> bool:
+        return 3
