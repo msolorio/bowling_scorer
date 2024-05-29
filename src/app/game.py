@@ -4,12 +4,13 @@ from app.throws import Throws
 
 
 class Game:
-    def __init__(self):
-        self._throws = Throws()
+    def __init__(self, throws=Throws, frames=Frames):
+        self._throws = throws()
+        self._frames_creator = frames
 
     @property
     def _frames(self) -> list[Frame]:
-        return Frames(throws=self._throws)
+        return self._frames_creator(throws=self._throws)
 
     @property
     def score(self) -> int:

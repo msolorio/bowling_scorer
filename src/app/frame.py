@@ -1,6 +1,6 @@
 import abc
 
-from app.throw import Throw
+from app.throw import AbstractThrowNode
 from app.scorer import (
     AbstractScorer,
     StrikeScorer,
@@ -11,7 +11,7 @@ from app.scorer import (
 
 class FrameFactory:
     @staticmethod
-    def new_frame(starting_throw: Throw, frame_number: int) -> "Frame":
+    def new_frame(starting_throw: AbstractThrowNode, frame_number: int) -> "Frame":
         if frame_number == 10 and starting_throw.is_strike:
             frame = LastStrikeFrame
         elif frame_number == 10 and starting_throw.is_spare:
@@ -26,7 +26,7 @@ class FrameFactory:
 
 
 class Frame(abc.ABC):
-    def __init__(self, starting_throw: Throw):
+    def __init__(self, starting_throw: AbstractThrowNode):
         self.starting_throw = starting_throw
 
     @property

@@ -1,4 +1,5 @@
-from app.throws import Throws, EmptyNode
+from app.throws import Throws
+from app.throw import EmptyNode
 
 
 def test_can_add_and_access_single_throw():

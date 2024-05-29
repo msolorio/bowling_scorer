@@ -1,10 +1,10 @@
 import abc
 
-from app.throw import Throw
+from app.throw import AbstractThrowNode
 
 
 class AbstractScorer(abc.ABC):
-    def __init__(self, starting_throw: Throw):
+    def __init__(self, starting_throw: AbstractThrowNode):
         self.starting_throw = starting_throw
 
     @property
